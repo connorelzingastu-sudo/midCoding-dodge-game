@@ -1,6 +1,6 @@
 # Pygame Dodge Game Assignment
 
-## Overview
+## Overview and Goal
 
 Today you are going to build a new Pygame arcade game called **Dodge Game**.
 
