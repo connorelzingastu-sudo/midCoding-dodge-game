@@ -1,17 +1,165 @@
-# Name:
-# Date:
+# Name: Connor Elzinga
+# Date: 05/18/2026
 # Pygame Dodge Game
 
 """
-Student Skeleton: Pygame Dodge Game
+Pygame Dodge Game
 
-Follow the README steps and fill in or customize each TODO section.
 """
 
 import pygame
 import random
+import sys
 
-
-# Step 3: Initialize Pygame
 pygame.init()
 
+# The Window
+WIDTH = 600
+HEIGHT = 700
+
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Dodge Game")
+
+# Clock
+clock = pygame.time.Clock()
+FPS = 60
+
+# Colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+BLUE = (50, 120, 255)
+RED = (255, 60, 60)
+
+# ===== Player =====
+class Player(object):
+    def __init__(self):
+        width = 60
+        height = 60
+
+        x = WIDTH // 2 - width // 2
+        y = HEIGHT - 90
+
+        self.rect = pygame.Rect(x, y, width, height)
+        self.speed = 7
+
+    def handle_input(self, keys):
+        if keys[pygame.K_LEFT]:
+            self.rect.x -= self.speed
+
+        if keys[pygame.K_RIGHT]:
+            self.rect.x += self.speed
+
+        # Keep player on the screen
+        if self.rect.x < 0:
+            self.rect.x = 0
+
+        if self.rect.x > WIDTH - self.rect.width:
+            self.rect.x = WIDTH - self.rect.width
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, BLUE, self.rect)
+
+
+# ===== Falling Object =====
+class FallingObject(object):
+    def __init__(self):
+        width = 50
+        height = 50
+        x = random.randint(0, WIDTH - width)
+        y = -height
+        self.rect = pygame.Rect(x, y, width, height)
+        self.speed = 5
+
+    def update(self):
+        self.rect.y += self.speed
+
+        # Reset at top of the screen at a new position and score
+        score = 0
+        if self.rect.y > HEIGHT:
+            y = -self.rect.height
+            x = random.randint(0, WIDTH - self.rect.width)
+            self.rect.x = x
+            self.rect.y = y
+            score = 1
+        return score
+    
+    def draw(self, screen):
+        pygame.draw.rect(screen, RED, self.rect)
+
+
+# ===== GAME =====
+class Game:
+    def __init__(self):
+        # Player
+        self.player = Player()
+        
+        # Objects
+        self.falling_objects = [
+            FallingObject()
+        ]
+        
+        self.score = 0
+        self.game_over = False
+
+        self.font = pygame.font.SysFont(None, 36)
+    
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+        return True
+    
+    def update(self):
+        keys = pygame.key.get_pressed()
+
+        # Update player with input
+        self.player.handle_input(keys)
+  
+        # Update falling object positions and score
+        # Also check for collisions
+        for falling_object in self.falling_objects:
+            self.score += falling_object.update()
+            if self.player.rect.colliderect(falling_object.rect):
+                self.game_over = True
+
+    def draw(self):
+        screen.fill(WHITE)
+
+        self.player.draw(screen)
+        
+        for falling_object in self.falling_objects:
+            falling_object.draw(screen)
+        
+        # Draw score
+        score_text = self.font.render(f"Score: {self.score}", True, BLACK)
+        screen.blit(score_text, (20, 20))
+        
+        # Draw game state
+        if self.game_over:
+            game_over_text = self.font.render("GAME OVER", True, BLACK)
+            restart_text = self.font.render("Close the window to quit.", True, BLACK)
+
+            screen.blit(game_over_text, (WIDTH // 2 - 90, HEIGHT // 2 - 30))
+            screen.blit(restart_text, (WIDTH // 2 - 140, HEIGHT // 2 + 10))
+        
+        pygame.display.update()
+    
+    def run(self):
+        running = True
+        while running:
+            running = self.handle_events()
+            
+            if not self.game_over:
+                self.update()
+            
+            self.draw()
+            clock.tick(60)
+        
+        pygame.quit()
+        sys.exit()
+
+
+# Run the game
+if __name__ == "__main__":
+    game = Game()
+    game.run()
