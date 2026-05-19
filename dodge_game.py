@@ -29,6 +29,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 BLUE = (50, 120, 255)
 RED = (255, 60, 60)
+GREEN = (0, 255, 0)
 
 # ===== Player =====
 class Player(object):
@@ -57,7 +58,7 @@ class Player(object):
             self.rect.x = WIDTH - self.rect.width
 
     def draw(self, screen):
-        pygame.draw.rect(screen, BLUE, self.rect)
+        pygame.draw.rect(screen, GREEN, self.rect)
 
 
 # ===== Falling Object =====
