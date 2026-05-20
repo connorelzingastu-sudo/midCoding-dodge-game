@@ -218,6 +218,8 @@ if __name__ == "__main__":
 
 
 
-# 1. Space 
-# 2. A Spceship and Meteors
-# 3. Lives, 
+# 1. Space .
+# 2. A Spceship and Meteors.
+# 3. Lives, Custom Sprite, Custom Backround,  And Restart Option.
+# 4. The multypule lives had big problems that took a while for me to get right. 
+# 5. I would add where the block would fall faster as your score increces. 
