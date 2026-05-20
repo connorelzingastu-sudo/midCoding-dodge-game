@@ -32,16 +32,27 @@ RED = (255, 60, 60)
 GREEN = (0, 255, 0)
 PURPLE = (255, 0, 255)
 
-# ===== Player =====
-class Player(object):
-    def __init__(self):
-        width = 60
-        height = 60
+# Load an image as a pygame surface and scale it to width, height
+def load_sprite_surface(file_name, width, height):
+    fullres = pygame.image.load(file_name).convert_alpha()
+    return pygame.transform.smoothscale(fullres, (width, height))
 
+# ===== Player =====
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        width = 60
+        height = 72
+        self.image = load_sprite_surface("spaceship.png", width, height)
+
+        # Player location
+        self.rect = self.image.get_rect()
+        
         x = WIDTH // 2 - width // 2
         y = HEIGHT - 90
 
-        self.rect = pygame.Rect(x, y, width, height)
+        self.rect.x = x
+        self.rect.y = y
         self.speed = 7
 
     def handle_input(self, keys):
@@ -58,8 +69,8 @@ class Player(object):
         if self.rect.x > WIDTH - self.rect.width:
             self.rect.x = WIDTH - self.rect.width
 
-    def draw(self, screen):
-        pygame.draw.rect(screen, GREEN, self.rect)
+    def draw(self, surface):
+        surface.blit(self.image, self.rect)
 
 
 # ===== Falling Object =====
