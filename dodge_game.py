@@ -104,6 +104,7 @@ class Game:
             FallingObject(5, RED),
             FallingObject(10, BLUE),
             FallingObject(15, PURPLE),
+            FallingObject(20, BLACK)
         ]
         
         self.score = 0
