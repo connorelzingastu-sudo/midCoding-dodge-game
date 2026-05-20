@@ -101,15 +101,16 @@ class Game:
         
         # Objects
         self.falling_objects = [
-            FallingObject(5, RED),
-            FallingObject(10, BLUE),
-            FallingObject(15, PURPLE),
-            FallingObject(20, BLACK)
+            FallingObject(4, RED),
+            FallingObject(8, BLUE),
+            FallingObject(12, PURPLE),
+            FallingObject(16, BLACK)
         ]
         
         self.score = 0
         self.lives = 3
         self.game_over = False
+        self.win = False
 
         self.font = pygame.font.SysFont(None, 36)
     
@@ -138,6 +139,10 @@ class Game:
                 if self.lives <= 0:
                     self.game_over = True
 
+        # Check win condition
+        if self.score >= 100:
+            self.win = True
+
     def draw(self):
         screen.fill(WHITE)
 
@@ -156,7 +161,14 @@ class Game:
         # Draw game state
         if self.game_over:
             game_over_text = self.font.render("GAME OVER", True, BLACK)
-            restart_text = self.font.render("Close the window to quit.", True, BLACK)
+            restart_text = self.font.render("Press R to play again.", True, BLACK)
+
+            screen.blit(game_over_text, (WIDTH // 2 - 90, HEIGHT // 2 - 30))
+            screen.blit(restart_text, (WIDTH // 2 - 140, HEIGHT // 2 + 10))
+
+        if self.win:
+            game_over_text = self.font.render("YOU WIN", True, GREEN)
+            restart_text = self.font.render("Press R to play again.", True, BLACK)
 
             screen.blit(game_over_text, (WIDTH // 2 - 90, HEIGHT // 2 - 30))
             screen.blit(restart_text, (WIDTH // 2 - 140, HEIGHT // 2 + 10))
@@ -168,8 +180,13 @@ class Game:
         while running:
             running = self.handle_events()
             
-            if not self.game_over:
+            if not self.game_over and not self.win:
                 self.update()
+            else:
+                 # Check for restart
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_r]:
+                    self.__init__()
             
             self.draw()
             clock.tick(60)
