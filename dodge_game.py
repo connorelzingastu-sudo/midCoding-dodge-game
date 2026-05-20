@@ -84,7 +84,7 @@ class FallingObject(object):
         return score
     
     def reset(self):
-        y = -self.rect.height
+        y = -self.rect.height * (1.0 + 4.0 * random.random())
         x = random.randint(0, WIDTH - self.rect.width)
         self.rect.x = x
         self.rect.y = y
