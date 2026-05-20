@@ -107,6 +107,10 @@ class FallingObject(object):
 # ===== GAME =====
 class Game:
     def __init__(self):
+        # Background
+        self.image = load_sprite_surface("space.png", WIDTH, HEIGHT)
+        self.image.set_alpha(160)
+
         # Player
         self.player = Player()
         
@@ -156,6 +160,7 @@ class Game:
 
     def draw(self):
         screen.fill(WHITE)
+        screen.blit(self.image,(0,0))
 
         self.player.draw(screen)
         
