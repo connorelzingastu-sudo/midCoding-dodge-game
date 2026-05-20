@@ -30,6 +30,7 @@ BLACK = (0, 0, 0)
 BLUE = (50, 120, 255)
 RED = (255, 60, 60)
 GREEN = (0, 255, 0)
+PURPLE = (255, 0, 255)
 
 # ===== Player =====
 class Player(object):
@@ -63,13 +64,14 @@ class Player(object):
 
 # ===== Falling Object =====
 class FallingObject(object):
-    def __init__(self):
+    def __init__(self, speed, color):
         width = 50
         height = 50
         x = random.randint(0, WIDTH - width)
         y = -height
         self.rect = pygame.Rect(x, y, width, height)
-        self.speed = 5
+        self.speed = speed
+        self.color = color
 
     def update(self):
         self.rect.y += self.speed
@@ -77,15 +79,18 @@ class FallingObject(object):
         # Reset at top of the screen at a new position and score
         score = 0
         if self.rect.y > HEIGHT:
-            y = -self.rect.height
-            x = random.randint(0, WIDTH - self.rect.width)
-            self.rect.x = x
-            self.rect.y = y
+            self.reset()
             score = 1
         return score
     
+    def reset(self):
+        y = -self.rect.height
+        x = random.randint(0, WIDTH - self.rect.width)
+        self.rect.x = x
+        self.rect.y = y
+    
     def draw(self, screen):
-        pygame.draw.rect(screen, RED, self.rect)
+        pygame.draw.rect(screen, self.color, self.rect)
 
 
 # ===== GAME =====
@@ -96,10 +101,13 @@ class Game:
         
         # Objects
         self.falling_objects = [
-            FallingObject()
+            FallingObject(5, RED),
+            FallingObject(10, BLUE),
+            FallingObject(15, PURPLE),
         ]
         
         self.score = 0
+        self.lives = 3
         self.game_over = False
 
         self.font = pygame.font.SysFont(None, 36)
@@ -120,8 +128,14 @@ class Game:
         # Also check for collisions
         for falling_object in self.falling_objects:
             self.score += falling_object.update()
+
+            # On collision with a falling object, reset it and lose a life
             if self.player.rect.colliderect(falling_object.rect):
-                self.game_over = True
+                self.lives -= 1
+                falling_object.reset()
+
+                if self.lives <= 0:
+                    self.game_over = True
 
     def draw(self):
         screen.fill(WHITE)
@@ -134,6 +148,9 @@ class Game:
         # Draw score
         score_text = self.font.render(f"Score: {self.score}", True, BLACK)
         screen.blit(score_text, (20, 20))
+
+        lives_text = self.font.render(f"Lives: {self.lives}", True, BLACK)
+        screen.blit(lives_text, (20, 60))
         
         # Draw game state
         if self.game_over:
