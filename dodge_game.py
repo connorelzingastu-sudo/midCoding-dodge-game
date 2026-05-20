@@ -18,7 +18,7 @@ WIDTH = 600
 HEIGHT = 700
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Dodge Game")
+pygame.display.set_caption("Space Race")
 
 # Clock
 clock = pygame.time.Clock()
