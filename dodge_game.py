@@ -215,3 +215,9 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     game.run()
+
+
+
+# 1. Space 
+# 2. A Spceship and Meteors
+# 3. Lives, 
